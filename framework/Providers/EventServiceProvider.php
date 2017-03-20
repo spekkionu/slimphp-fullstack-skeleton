@@ -22,7 +22,7 @@ class EventServiceProvider extends AbstractServiceProvider
         = [
             'event',
             'Illuminate\Events\Dispatcher',
-            'Illuminate\Contracts\Config\Repository'
+            'Illuminate\Contracts\Events\Dispatcher'
         ];
 
     /**
