@@ -15,7 +15,7 @@ class AuthServiceProvider extends AbstractServiceProvider
      */
     protected $provides
         = [
-            'auth', 'Golem\Auth', 'Golem\Auth\Storage\StorageInterface'
+            'auth', 'Golem\Auth\Auth', 'Golem\Auth\Storage\StorageInterface'
         ];
 
     /**
@@ -27,7 +27,7 @@ class AuthServiceProvider extends AbstractServiceProvider
     {
 
         $this->getContainer()->share(
-            'Golem\Auth',
+            'Golem\Auth\Auth',
             function () {
                 $userRepository = $this->getContainer()->get('App\Repositories\UserRepository');
                 $storage = $this->getContainer()->get('Golem\Auth\Storage\StorageInterface');
