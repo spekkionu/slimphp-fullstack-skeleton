@@ -40,13 +40,6 @@ class ErrorHandler extends Error
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, Exception $exception)
     {
         $this->logger->error("Uncaught exception was thrown", ['exception' => $exception]);
-        $this->container->get('newrelic')->error(
-            "Uncaught exception was thrown: {$exception->getMessage()}",
-            [
-                'exception' => $exception,
-                'transaction_name' => $request->getUri()->getPath()
-            ]
-        );
         return parent::__invoke($request, $response, $exception);
     }
 
@@ -67,6 +60,6 @@ class ErrorHandler extends Error
                 'message' => 'Application error',
                 'exception' => $exception
             ]
-        );
+        )->getBody()->__toString();
     }
 }

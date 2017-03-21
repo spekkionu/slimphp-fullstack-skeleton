@@ -183,6 +183,90 @@ if (!function_exists('send_json')) {
         return $response->withJson($data, $status);
     }
 }
+if (!function_exists('render')) {
+    /**
+     * Renders results of a subrequest
+     *
+     * @param string $callable Controller:action or route name
+     * @param array $params Extra params to pass to action
+     * @param array|null $query Query string variables
+     *
+     * @return string
+     */
+    function render($callable, array $params = [], array $query = [])
+    {
+        global $container;
+        if (preg_match('/^(.*)::(.*)$/', $callable)) {
+            $params['request'] = $container->get('request')->withQueryParams($query);
+            $params['response'] = $container->get('response');
+
+            $callable = 'App\\Controller\\' . $callable;
+            if (is_string($callable) && strpos($callable, '::') !== false) {
+                $callable = explode('::', $callable);
+            }
+            $callable[0] = $container->get($callable[0]);
+
+            $response = $container->call($callable, $params);
+            if ($response instanceof ResponseInterface) {
+                $stream = $response->getBody();
+                $stream->rewind();
+                return $stream->getContents();
+            }
+            return $response;
+        }
+        return route_request($callable, $params, $query);
+    }
+}
+if (!function_exists('route_request')) {
+    /**
+     * @param string $route
+     * @param array $params
+     * @param array $query
+     *
+     * @return string
+     */
+    function route_request($route, array $params = [], array $query = null)
+    {
+        $path = route($route, $params);
+        return sub_request($path, $query);
+    }
+}
+if (!function_exists('sub_request')) {
+    /**
+     * Perform a sub-request from within an application route
+     *
+     * This method allows you to prepare and initiate a sub-request, run within
+     * the context of the current request. This WILL NOT issue a remote HTTP
+     * request. Instead, it will route the provided URL, method, headers,
+     * cookies, body, and server variables against the set of registered
+     * application routes. The result response object is returned.
+     *
+     * @param  string $path The request URI path
+     * @param  array $query The request URI query string
+     *
+     * @return string
+     */
+    function sub_request($path, array $query = null)
+    {
+        global $container;
+        $method = 'GET';
+        $headers = [
+            'X-Sub-Request' => true,
+        ];
+        $cookies = [];
+        $bodyContent = '';
+        $response = null;
+        $query = $query ? http_build_query($query) : '';
+        /** @var ResponseInterface $response */
+        $response = $container->get('Slim\App')->subRequest(
+            $method, $path, $query, $headers, $cookies, $bodyContent, $response
+        );
+
+        $stream = $response->getBody();
+        $stream->rewind();
+        return $stream->getContents();
+    }
+}
 if (!function_exists('config')) {
     /**
      * Returns config variable

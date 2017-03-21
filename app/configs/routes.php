@@ -1,5 +1,4 @@
 <?php
-use Framework\Middleware\CsrfInit;
 use Psr7Middlewares\Middleware\TrailingSlash;
 
 /** @var \Slim\App $app */
@@ -9,7 +8,7 @@ use Psr7Middlewares\Middleware\TrailingSlash;
 //////////////////////////////////////////////
 
 $app->add($app->getContainer()->get('Framework\Middleware\RepopulateForm'));
-$app->add(new CsrfInit($app->getContainer()->get('csrf')));
+$app->add($app->getContainer()->get('Framework\Middleware\CsrfInit'));
 $app->add($app->getContainer()->get('Framework\Middleware\StartSession'));
 $app->add((new TrailingSlash(false))->redirect(301));
 

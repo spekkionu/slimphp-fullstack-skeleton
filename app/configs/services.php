@@ -1,6 +1,5 @@
 <?php
 
-use Framework\Container\LaravelContainer;
 use League\Container\Argument\RawArgument;
 
 $container = new League\Container\Container();

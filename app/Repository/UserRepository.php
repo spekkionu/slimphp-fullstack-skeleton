@@ -1,7 +1,7 @@
 <?php
-namespace App\Repositories;
+namespace App\Repository;
 
-use App\Models\User;
+use App\Model\User;
 use Golem\Auth\UserRepository as AuthRepository;
 
 class UserRepository implements AuthRepository
@@ -13,6 +13,6 @@ class UserRepository implements AuthRepository
      */
     public function findUserById($id)
     {
-        return User::findOrFail(1);
+        return User::findOrFail($id);
     }
 }

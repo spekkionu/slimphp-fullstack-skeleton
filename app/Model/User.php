@@ -1,5 +1,5 @@
 <?php
-namespace App\Models;
+namespace App\Model;
 
 use Golem\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
