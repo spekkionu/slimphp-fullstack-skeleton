@@ -65,7 +65,7 @@ class SlimServiceProvider extends AbstractServiceProvider
                     'responseChunkSize'                 => 4096,
                     'outputBuffering'                   => 'append',
                     'determineRouteBeforeAppMiddleware' => true,
-                    'displayErrorDetails'               => env('APP_SHOW_ERRORS', false) ? true : false,
+                    'displayErrorDetails'               => env('APP_DEBUG', false) ? true : false,
                 ];
 
                 return $settings;

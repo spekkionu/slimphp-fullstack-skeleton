@@ -2,6 +2,7 @@
 namespace Framework\Providers;
 
 use Illuminate\Config\Repository;
+use Illuminate\Database\Eloquent\Factory;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use League\Container\ServiceProvider\BootableServiceProviderInterface;
@@ -21,7 +22,9 @@ class DatabaseServiceProvider extends AbstractServiceProvider implements Bootabl
      */
     protected $provides
         = [
+            'database',
             'Illuminate\Database\Capsule\Manager',
+            'Illuminate\Database\Eloquent\Factory',
         ];
 
     /**
@@ -77,6 +80,13 @@ class DatabaseServiceProvider extends AbstractServiceProvider implements Bootabl
             'database',
             function () {
                 return $this->getContainer()->get('Illuminate\Database\Capsule\Manager');
+            }
+        );
+        $this->getContainer()->share(
+            'Illuminate\Database\Eloquent\Factory',
+            function () {
+                $faker = \Faker\Factory::create();
+                return Factory::construct($faker, app_path('database/factories'));
             }
         );
     }

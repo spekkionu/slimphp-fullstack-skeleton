@@ -23,5 +23,12 @@ if (file_exists(APP_ROOT . '/.env')) {
     $dotenv->load();
 }
 
+if (env('APP_DEBUG', true)) {
+    error_reporting(-1);
+    ini_set('display_errors', 1);
+} else {
+    ini_set('display_errors', 0);
+}
+
 // Init Service Container
 $container = require APP_DIR . '/configs/services.php';

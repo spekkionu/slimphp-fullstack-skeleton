@@ -311,15 +311,20 @@ if (!function_exists('logger')) {
 }
 if (!function_exists('session')) {
     /**
-     * Returns session instance
+     * Get / set the specified session value.
      *
-     * @return \Symfony\Component\HttpFoundation\Session\Session
+     * @return \Symfony\Component\HttpFoundation\Session\Session|mixed
      */
-    function session()
+    function session($key = null, $default = null)
     {
         global $container;
 
-        return $container->get('Symfony\Component\HttpFoundation\Session\Session');
+        $session = $container->get('Symfony\Component\HttpFoundation\Session\Session');
+        if (is_null($key)) {
+            return $session;
+        }
+
+        return $session->get($key, $default);
     }
 }
 if (!function_exists('auth')) {
@@ -446,6 +451,26 @@ if (!function_exists('app')) {
         }
 
         return $container->get($key, $args);
+    }
+}
+if (! function_exists('factory')) {
+    /**
+     * Create a model factory builder for a given class, name, and amount.
+     *
+     * @param  dynamic  class|class,name|class,amount|class,name,amount
+     * @return \Illuminate\Database\Eloquent\FactoryBuilder
+     */
+    function factory()
+    {
+        $factory = app(Illuminate\Database\Eloquent\Factory::class);
+        $arguments = func_get_args();
+        if (isset($arguments[1]) && is_string($arguments[1])) {
+            return $factory->of($arguments[0], $arguments[1])->times(isset($arguments[2]) ? $arguments[2] : null);
+        } elseif (isset($arguments[1])) {
+            return $factory->of($arguments[0])->times($arguments[1]);
+        } else {
+            return $factory->of($arguments[0]);
+        }
     }
 }
 if (!function_exists('format_date')) {

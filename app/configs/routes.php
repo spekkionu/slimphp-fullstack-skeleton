@@ -27,5 +27,6 @@ $validator = $app->getContainer()->get('Framework\Validation\ValidateRequestFact
 
 // Home Page
 $app->get('/', function($request, $response){
+
     return $response->getBody()->write('Hello World');
 })->setName('home');
