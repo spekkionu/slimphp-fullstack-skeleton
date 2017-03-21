@@ -36,7 +36,7 @@ class NotFoundHandler extends NotFound
         if ($this->view->getRenderer()->exists('error.404')) {
             $response = new Response();
 
-            return $this->view->render($response->withStatus(404), 'error.404');
+            return $this->view->render($response->withStatus(404), 'error.404')->getBody()->__toString();
         }
 
         return parent::renderHtmlNotFoundOutput($request);
