@@ -23,7 +23,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'database'   => [
+    'database' => [
         'default' => [
             'driver'    => env('DATABASE_DRIVER', 'mysql'),
             'host'      => env('DATABASE_HOST'),
@@ -44,7 +44,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'cache'      => [
+    'cache' => [
         // Can be array, file, apc, redis, memcache, memcached, or ioc container key that resolves to driver
         // Set to array to disable cache
         'driver' => env('CACHE_DRIVER', 'file'),
@@ -58,7 +58,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'mail'       => [
+    'mail' => [
         'from'        => [
             'address' => env('MAIL_FROM_ADDRESS'),
             'name'    => env('MAIL_FROM_NAME'),
@@ -85,7 +85,28 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'filesystem' => [],
+    'filesystem' => [
+        'default' => env('FILESYSTEM_DEFAULT', 'local'),
+        'disks'   => [
+            'local'  => [
+                'driver' => 'local',
+                'root'   => storage_path('app'),
+                'visibility' => 'private',
+            ],
+            'public' => [
+                'driver' => 'local',
+                'root'   => storage_path('public'),
+                'visibility' => 'public',
+            ],
+
+//            's3' => [
+//                'driver' => 's3',
+//                'bucket' => env('AWS_S3_BUCKET'),
+//                'prefix' => env('AWS_S3_PREFIX', ''),
+//                'visibility' => 'private',
+//            ],
+        ],
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -93,7 +114,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'crypt'      => [
+    'crypt' => [
         'key'  => env('CRYPT_KEY'),
         'algo' => env('CRYPT_ALGO', 'aes'),
         'mode' => env('CRYPT_MODE', 'cbc'),
@@ -106,7 +127,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'queue'      => [
+    'queue' => [
         'enabled'    => env('QUEUE_ENABLED', false),
         'name'       => env('QUEUE_NAME'),
         // The queue driver to use, must be beanstalkd, iron, or sqs
@@ -127,7 +148,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'redis'      => [
+    'redis' => [
         // Can be redis for extension or predis for predis/predis
         'driver' => env('REDIS_DRIVER', 'predis'),
         // tcp or unix for unix socket
@@ -144,7 +165,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'memcache'   => [
+    'memcache' => [
         // Can be memcache or memcached
         'driver'  => env('MEMCACHE_DRIVER', 'memcached'),
         'host'    => env('MEMCACHE_HOST', '127.0.0.1'),
@@ -158,7 +179,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'aws'        => [
+    'aws' => [
 
         'key'    => env('AWS_ACCESS_KEY'),
         'secret' => env('AWS_SECRET_KEY'),
@@ -175,7 +196,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'facebook'   => [
+    'facebook' => [
         'id'     => env('FACEBOOK_APP_ID'),
         'secret' => env('FACEBOOK_APP_SECRET'),
     ],

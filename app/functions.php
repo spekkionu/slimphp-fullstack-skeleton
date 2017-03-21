@@ -187,9 +187,9 @@ if (!function_exists('render')) {
     /**
      * Renders results of a subrequest
      *
-     * @param string $callable Controller:action or route name
-     * @param array $params Extra params to pass to action
-     * @param array|null $query Query string variables
+     * @param string     $callable Controller:action or route name
+     * @param array      $params   Extra params to pass to action
+     * @param array|null $query    Query string variables
      *
      * @return string
      */
@@ -197,7 +197,7 @@ if (!function_exists('render')) {
     {
         global $container;
         if (preg_match('/^(.*)::(.*)$/', $callable)) {
-            $params['request'] = $container->get('request')->withQueryParams($query);
+            $params['request']  = $container->get('request')->withQueryParams($query);
             $params['response'] = $container->get('response');
 
             $callable = 'App\\Controller\\' . $callable;
@@ -210,24 +210,28 @@ if (!function_exists('render')) {
             if ($response instanceof ResponseInterface) {
                 $stream = $response->getBody();
                 $stream->rewind();
+
                 return $stream->getContents();
             }
+
             return $response;
         }
+
         return route_request($callable, $params, $query);
     }
 }
 if (!function_exists('route_request')) {
     /**
      * @param string $route
-     * @param array $params
-     * @param array $query
+     * @param array  $params
+     * @param array  $query
      *
      * @return string
      */
     function route_request($route, array $params = [], array $query = null)
     {
         $path = route($route, $params);
+
         return sub_request($path, $query);
     }
 }
@@ -241,22 +245,22 @@ if (!function_exists('sub_request')) {
      * cookies, body, and server variables against the set of registered
      * application routes. The result response object is returned.
      *
-     * @param  string $path The request URI path
-     * @param  array $query The request URI query string
+     * @param  string $path  The request URI path
+     * @param  array  $query The request URI query string
      *
      * @return string
      */
     function sub_request($path, array $query = null)
     {
         global $container;
-        $method = 'GET';
-        $headers = [
+        $method      = 'GET';
+        $headers     = [
             'X-Sub-Request' => true,
         ];
-        $cookies = [];
+        $cookies     = [];
         $bodyContent = '';
-        $response = null;
-        $query = $query ? http_build_query($query) : '';
+        $response    = null;
+        $query       = $query ? http_build_query($query) : '';
         /** @var ResponseInterface $response */
         $response = $container->get('Slim\App')->subRequest(
             $method, $path, $query, $headers, $cookies, $bodyContent, $response
@@ -264,6 +268,7 @@ if (!function_exists('sub_request')) {
 
         $stream = $response->getBody();
         $stream->rewind();
+
         return $stream->getContents();
     }
 }
@@ -472,5 +477,45 @@ if (!function_exists('format_date')) {
         }
 
         return $date->format($format);
+    }
+}
+if (!function_exists('e')) {
+    /**
+     * Escapes string for use in html
+     *
+     *
+     * @return string|null
+     */
+    function e($value, $escaper = 'html')
+    {
+        if (empty($value)) {
+            return null;
+        }
+        global $container;
+        $e = $container->get('Aura\Html\Escaper');
+        if (in_array($escaper, ['attr', 'attribute', 'a'])) {
+            return $e->attr($value);
+        } elseif (in_array($escaper, ['css', 'c'])) {
+            return $e->css($value);
+        } elseif (in_array($escaper, ['js', 'javascript', 'j'])) {
+            return $e->js($value);
+        } else {
+            return $e->html($value);
+        }
+
+    }
+}
+if (!function_exists('html')) {
+    /**
+     * Returns html helper
+     *
+     *
+     * @return \Aura\Html\HelperLocator
+     */
+    function html()
+    {
+        global $container;
+
+        return $container->get('Aura\Html\HelperLocator');
     }
 }

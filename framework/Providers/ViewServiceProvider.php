@@ -46,7 +46,7 @@ class ViewServiceProvider extends AbstractServiceProvider
         $this->getContainer()->share(
             'Illuminate\View\Engines\EngineResolver',
             function () {
-                $pathToCompiledTemplates = STORAGE_DIR . '/view';
+                $pathToCompiledTemplates = STORAGE_DIR . '/cache/view';
 
                 $resolver      = new EngineResolver;
                 $filesystem    = $this->getContainer()->get('Illuminate\Filesystem\Filesystem');

@@ -20,13 +20,18 @@ $container->addServiceProvider(Framework\Providers\SessionServiceProvider::class
 $container->addServiceProvider(Framework\Providers\AuthServiceProvider::class);
 $container->addServiceProvider(Framework\Providers\AclServiceProvider::class);
 $container->addServiceProvider(Framework\Providers\CacheServiceProvider::class);
+$container->addServiceProvider(Framework\Providers\FilesystemServiceProvider::class);
 $container->addServiceProvider(Framework\Providers\CryptServiceProvider::class);
 $container->addServiceProvider(Framework\Providers\MailServiceProvider::class);
 $container->addServiceProvider(Framework\Providers\EventServiceProvider::class);
 $container->addServiceProvider(Framework\Providers\CommandBusServiceProvider::class);
 $container->addServiceProvider(Framework\Providers\QueueServiceProvider::class);
+//$container->addServiceProvider(Framework\Providers\AwsServiceProvider::class);
 $container->addServiceProvider(Framework\Providers\ViewServiceProvider::class);
+$container->addServiceProvider(Framework\Providers\HtmlServiceProvider::class);
 $container->addServiceProvider(Framework\Providers\SlimServiceProvider::class);
+//$container->addServiceProvider(Framework\Providers\HtmlPurifierServiceProvider::class);
+//$container->addServiceProvider(Framework\Providers\MarkdownServiceProvider::class);
 
 // Add application service providers
 
