@@ -75,6 +75,73 @@ if (!function_exists('current_url')) {
         return $uri->normalize()->setHost(null)->setPort(null)->setScheme(null)->toString();
     }
 }
+if (!function_exists('asset')) {
+    /**
+     * Returns asset url
+     *
+     * @param string $path
+     * @param bool   $absolute
+     * @param bool   $secure
+     *
+     * @return string
+     */
+    function asset($path = '', $absolute = false, $secure = false)
+    {
+        global $container;
+        /** @var Slim\Http\Request $request */
+        $request = $container->get('Slim\Http\Request');
+        $uri     = config('app.url') . '/' . ltrim($path, '/');
+        $uri     = Zend\Uri\UriFactory::factory($uri);
+        if ($secure) {
+            $uri = $uri->setScheme('https');
+        }
+
+        if ($absolute || $request->getUri()->getScheme() != $uri->getScheme()) {
+            return $uri->toString();
+        }
+
+        return $uri->normalize()->setHost(null)->setPort(null)->setScheme(null)->toString();
+    }
+}
+if (!function_exists('mix')) {
+    /**
+     * Get the path to a versioned Mix file.
+     *
+     * @param  string $path
+     * @param  string $manifestDirectory
+     *
+     * @return \Illuminate\Support\HtmlString
+     *
+     * @throws \Exception
+     */
+    function mix($path, $manifestDirectory = '')
+    {
+        static $manifest;
+        if (!starts_with($path, '/')) {
+            $path = "/{$path}";
+        }
+        if ($manifestDirectory && !starts_with($manifestDirectory, '/')) {
+            $manifestDirectory = "/{$manifestDirectory}";
+        }
+        if (file_exists(public_path($manifestDirectory . '/hot'))) {
+            return new \Illuminate\Support\HtmlString("http://localhost:8080{$path}");
+        }
+        if (!$manifest) {
+            if (!file_exists($manifestPath = public_path($manifestDirectory . '/mix-manifest.json'))) {
+                throw new Exception('The Mix manifest does not exist.');
+            }
+            $manifest = json_decode(file_get_contents($manifestPath), true);
+        }
+        if (!array_key_exists($path, $manifest)) {
+            throw new Exception(
+                "Unable to locate Mix file: {$path}. Please check your " .
+                'webpack.mix.js output paths and try again.'
+            );
+        }
+
+        return new \Illuminate\Support\HtmlString($manifestDirectory . $manifest[$path]);
+    }
+}
 if (!function_exists('route')) {
     /**
      * Build the path for a named route including the base path
@@ -453,16 +520,17 @@ if (!function_exists('app')) {
         return $container->get($key, $args);
     }
 }
-if (! function_exists('factory')) {
+if (!function_exists('factory')) {
     /**
      * Create a model factory builder for a given class, name, and amount.
      *
      * @param  dynamic  class|class,name|class,amount|class,name,amount
+     *
      * @return \Illuminate\Database\Eloquent\FactoryBuilder
      */
     function factory()
     {
-        $factory = app(Illuminate\Database\Eloquent\Factory::class);
+        $factory   = app(Illuminate\Database\Eloquent\Factory::class);
         $arguments = func_get_args();
         if (isset($arguments[1]) && is_string($arguments[1])) {
             return $factory->of($arguments[0], $arguments[1])->times(isset($arguments[2]) ? $arguments[2] : null);
@@ -504,14 +572,14 @@ if (!function_exists('format_date')) {
         return $date->format($format);
     }
 }
-if (!function_exists('e')) {
+if (!function_exists('escape')) {
     /**
      * Escapes string for use in html
      *
      *
      * @return string|null
      */
-    function e($value, $escaper = 'html')
+    function escape($value, $escaper = 'html')
     {
         if (empty($value)) {
             return null;

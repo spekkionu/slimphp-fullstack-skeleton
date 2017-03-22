@@ -8,7 +8,10 @@ return [
     */
 
     'app' => [
+        // The main app url. Should not end is slash
         'url'              => env('APP_URL'),
+        // The base url for cdn. Set to app url to not use a cdn. Should not end in slash
+        'cdn'              => env('APP_URL'),
         // Timezone used internally for storing and calculating dates
         // Recommended to leave as UTC
         'timezone'         => env('TIMEZONE', 'UTC'),

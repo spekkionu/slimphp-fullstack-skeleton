@@ -2,3 +2,4 @@
 /vendor
 .sass-cache
 /bin
+/node_modules
