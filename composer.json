@@ -29,6 +29,7 @@
     "pmg/queue-tactician": "^3.0",
     "ramsey/uuid": "^3.5",
     "roave/security-advisories": "dev-master",
+    "robmorgan/phinx": "^0.8.0",
     "slim/slim": "^3.7",
     "spekkionu/tactician-container-selfhandling": "^1.0",
     "swiftmailer/swiftmailer": "^5.4",
