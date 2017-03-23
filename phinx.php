@@ -1,6 +1,10 @@
 <?php
-
 require_once(__DIR__ . '/framework/bootstrap.php');
+
+/** @var Illuminate\Database\Capsule\Manager $db */
+$db = $container->get('Illuminate\Database\Capsule\Manager');
+/** @var PDO $pdo */
+$pdo = $db->getConnection()->getPdo();
 
 return [
     'paths'        => [
@@ -11,13 +15,8 @@ return [
         "default_migration_table" => "phinxlog",
         "default_database"        => 'production',
         "production"              => [
-            "adapter"      => env('DATABASE_DRIVER', "mysql"),
-            "host"         => env('DATABASE_HOST'),
             "name"         => env('DATABASE_DBNAME'),
-            "user"         => env('DATABASE_USER'),
-            "pass"         => env('DATABASE_PASSWORD'),
-            "port"         => env('DATABASE_PORT', 3306),
-            "charset"      => env('DATABASE_CHARSET', "utf8mb4"),
+            "connection"   => $pdo,
             "table_prefix" => env('DATABASE_PREFIX', ''),
         ],
         "testing"                 => [

@@ -41,19 +41,40 @@ class DatabaseServiceProvider extends AbstractServiceProvider implements Bootabl
                 $capsule  = new Capsule;
                 $settings = $config->get('database');
                 foreach ($settings as $name => $connection) {
-                    $capsule->addConnection(
-                        [
-                            'driver'    => $config->get("database.{$name}.driver", 'mysql'),
-                            'host'      => $config->get("database.{$name}.host"),
-                            'database'  => $config->get("database.{$name}.dbname"),
-                            'username'  => $config->get("database.{$name}.username"),
-                            'password'  => $config->get("database.{$name}.password"),
-                            'charset'   => $config->get("database.{$name}.charset", 'utf8mb4'),
-                            'collation' => $config->get("database.{$name}.collation", 'utf8mb4_unicode_520_ci'),
-                            'prefix'    => $config->get("database.{$name}.prefix", ""),
-                            'strict'    => $config->get("database.{$name}.strict", true),
-                        ], $name
-                    );
+                    $driver = $config->get("database.{$name}.driver", 'mysql');
+                    if ($driver === 'sqlite') {
+                        $dbname = $config->get("database.{$name}.dbname");
+                        if($dbname === 'memory'){
+                            $database = ':memory:';
+                        } else {
+                            $filename = pathinfo($dbname, PATHINFO_FILENAME) . '.sqlite';
+                            $database = app_path('storage/database/' . $filename);
+                        }
+
+                        $capsule->addConnection(
+                            [
+                                'driver'    => $driver,
+                                'database'  => $database,
+                                'charset'   => $config->get("database.{$name}.charset", 'utf8mb4'),
+                                'collation' => $config->get("database.{$name}.collation", 'utf8mb4_unicode_520_ci'),
+                                'prefix'    => $config->get("database.{$name}.prefix", ""),
+                            ], $name
+                        );
+                    } else {
+                        $capsule->addConnection(
+                            [
+                                'driver'    => $config->get("database.{$name}.driver", 'mysql'),
+                                'host'      => $config->get("database.{$name}.host"),
+                                'database'  => $config->get("database.{$name}.dbname"),
+                                'username'  => $config->get("database.{$name}.username"),
+                                'password'  => $config->get("database.{$name}.password"),
+                                'charset'   => $config->get("database.{$name}.charset", 'utf8mb4'),
+                                'collation' => $config->get("database.{$name}.collation", 'utf8mb4_unicode_520_ci'),
+                                'prefix'    => $config->get("database.{$name}.prefix", ""),
+                                'strict'    => $config->get("database.{$name}.strict", true),
+                            ], $name
+                        );
+                    }
                 }
 
 
@@ -86,6 +107,7 @@ class DatabaseServiceProvider extends AbstractServiceProvider implements Bootabl
             'Illuminate\Database\Eloquent\Factory',
             function () {
                 $faker = \Faker\Factory::create();
+
                 return Factory::construct($faker, app_path('database/factories'));
             }
         );
