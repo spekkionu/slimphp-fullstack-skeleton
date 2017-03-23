@@ -175,7 +175,11 @@ class SlimServiceProvider extends AbstractServiceProvider
         $this->getContainer()->share(
             'view',
             function () {
-                return new Blade($this->getContainer()->get('Illuminate\View\Factory'));
+                $view = new Blade($this->getContainer()->get('Illuminate\View\Factory'));
+                /** @var \Framework\Validation\ValidationManager $validator */
+                $validator = $this->getContainer()->get('Framework\Validation\ValidationManager');
+                $view->share('errors', $validator->getErrors());
+                return $view;
             }
         );
     }

@@ -1,6 +1,8 @@
 <?php
 namespace Framework\Form;
 
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\InputFilter\InputFilter;
 
 class BaseForm extends InputFilter
@@ -68,5 +70,17 @@ class BaseForm extends InputFilter
             $errors[$field] = array_shift($errors);
         }
         return $errors;
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     *
+     * @return $this
+     */
+    public function setRequest(ServerRequestInterface $request)
+    {
+        $this->setData(array_merge($request->getParsedBody(), $request->getUploadedFiles()));
+
+        return $this;
     }
 }

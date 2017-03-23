@@ -23,6 +23,7 @@
     <div class="site__content">
         @section('wrapper')
             <div class="container">
+                @include('partials.flash-messages')
                 @yield('content')
             </div>
         @show

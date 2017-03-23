@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\HtmlString;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Response;
 
@@ -23,7 +24,7 @@ if (!function_exists('app_path')) {
      */
     function app_path($path = '')
     {
-        return APP_ROOT . DIRECTORY_SEPARATOR . ltrim($path, '/');
+        return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, APP_ROOT . DIRECTORY_SEPARATOR . ltrim($path, '/'));
     }
 }
 if (!function_exists('public_path')) {
@@ -34,7 +35,7 @@ if (!function_exists('public_path')) {
      */
     function public_path($path = '')
     {
-        return WEBROOT . DIRECTORY_SEPARATOR . ltrim($path, '/');
+        return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, WEBROOT . DIRECTORY_SEPARATOR . ltrim($path, '/'));
     }
 }
 if (!function_exists('storage_path')) {
@@ -45,7 +46,7 @@ if (!function_exists('storage_path')) {
      */
     function storage_path($path = '')
     {
-        return STORAGE_DIR . DIRECTORY_SEPARATOR . ltrim($path, '/');
+        return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, STORAGE_DIR . DIRECTORY_SEPARATOR . ltrim($path, '/'));
     }
 }
 if (!function_exists('current_url')) {
@@ -157,7 +158,7 @@ if (!function_exists('route')) {
     {
         global $container;
         /** @var Slim\Interfaces\RouterInterface $router */
-        $router = $container->get('Slim\Interfaces\RouterInterface');
+        $router = $container->get('router');
 
         if ($absolute) {
             return $router->pathFor($name, $data, $queryParams);
@@ -392,6 +393,116 @@ if (!function_exists('session')) {
         }
 
         return $session->get($key, $default);
+    }
+}
+if (!function_exists('csrf_name')) {
+    /**
+     * Returns csrf token name
+     *
+     * @return string
+     */
+    function csrf_name()
+    {
+        $csrf = app('csrf');
+
+        return $csrf->getTokenName();
+    }
+}
+if (!function_exists('csrf_value')) {
+    /**
+     * Returns csrf token value
+     *
+     * @return string
+     */
+    function csrf_value()
+    {
+        $csrf = app('csrf');
+
+        return $csrf->getTokenValue();
+    }
+}
+if (!function_exists('csrf')) {
+    /**
+     * Returns csrf field
+     *
+     * @return HtmlString
+     */
+    function csrf()
+    {
+        $csrf = app('csrf');
+
+        $fields = '<input type="hidden" name="csrf_name" value="' . $csrf->getTokenName() . '">';
+        $fields .= '<input type="hidden" name="csrf_value" value="' . $csrf->getTokenValue() . '">';
+
+        return new HtmlString($fields);
+    }
+}
+if (!function_exists('old')) {
+    /**
+     * Returns old input value
+     *
+     * @param string $key
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    function old($key, $default = null)
+    {
+        /** @var \Framework\Validation\ValidationManager $validation */
+        $validation = app('Framework\Validation\ValidationManager');
+        $old = $validation->getOldInput();
+        if (array_key_exists($key, $old)) {
+            return $old[$key];
+        }
+        return $default;
+    }
+}
+if (!function_exists('form_errors')) {
+    /**
+     * Renders form errors
+     *
+     * @param string     $name
+     * @param null $id
+     *
+     * @return null|string
+     */
+    function form_errors($name, $id = null)
+    {
+        /** @var \Framework\Validation\ValidationManager $validation */
+        $validation = app('Framework\Validation\ValidationManager');
+        $errors = $validation->getErrors();
+        if ($errors->has($name)) {
+            $output = '<ul class="errors">';
+            foreach ($errors->get($name) as $message) {
+                $output .= '<li';
+                if ($id) {
+                    $output .= ' id="' . escape($id, 'a') . '-error"';
+                }
+                $output .= ' class="has-error">';
+                $output .= escape($message, 'h');
+                $output .= '</li>';
+            }
+            $output .= '</ul>';
+
+            return $output;
+        }
+        return null;
+    }
+}
+if (!function_exists('flash_messages')) {
+    /**
+     * @param string $namespace
+     * @param bool   $keep
+     *
+     * @return array
+     */
+    function flash_messages($namespace = 'messages', $keep = false)
+    {
+        if ($keep) {
+            return session()->getFlashBag()->peek($namespace);
+        }
+
+        return session()->getFlashBag()->get($namespace);
     }
 }
 if (!function_exists('auth')) {

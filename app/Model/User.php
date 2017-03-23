@@ -7,6 +7,15 @@ use Zend\Permissions\Acl\Role\RoleInterface;
 
 class User extends Model implements Authenticatable, RoleInterface
 {
+    /**
+     * @var array
+     */
+    protected $dates = ['created_at', 'updated_at', 'last_login'];
+
+    /**
+     * @var array
+     */
+    protected $hidden = ['password'];
 
     /**
      * @return string|int

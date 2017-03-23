@@ -2,7 +2,7 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class CreateUsersTable extends AbstractMigration
+class CreatePasswordResets extends AbstractMigration
 {
     /**
      * Change Method.
@@ -27,16 +27,13 @@ class CreateUsersTable extends AbstractMigration
      */
     public function change()
     {
-        $table = $this->table('users', ['id' => false]);
+        $table = $this->table('password_resets', ['id' => false]);
         $table->addColumn('id', 'integer', ['signed' => false, 'identity' => true]);
-        $table->addColumn('name', 'string', ['limit' => 255, 'null' => true]);
         $table->addColumn('email', 'string', ['limit' => 255]);
-        $table->addColumn('password', 'string', ['null' => true]);
-        $table->addColumn('created_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP']);
-        $table->addColumn('updated_at', 'timestamp', ['null' => true]);
-        $table->addColumn('last_login', 'timestamp', ['null' => true]);
+        $table->addColumn('token', 'string', ['limit' => 255, 'null' => true]);
+        $table->addColumn('expires_at', 'timestamp', ['null' => true]);
 
-        $table->addIndex(array('email'), array('unique' => true));
+        $table->addIndex(array('email'));
 
         $table->create();
     }
