@@ -58,6 +58,7 @@
       "Framework\\": "framework"
     },
     "files": [
+      "framework/functions.php",
       "app/functions.php"
     ]
   },

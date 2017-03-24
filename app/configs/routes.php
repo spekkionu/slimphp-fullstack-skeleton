@@ -48,15 +48,14 @@ $app->post('/login/password/{token:[a-zA-Z0-9]{16}}', 'App\Controller\Auth\Passw
 // Account Management
 //////////////////////////////////////////////
 $app->group('/account', function () use ($csrf, $validator) {
-    $this->get('/', 'App\Controller\Account\AccountController:dashboard')->setName('account');
-    $this->get('/profile', 'App\Controller\Account\ProfileController:profile')->setName('account.profile');
-    $this->post('/profile', 'App\Controller\Account\ProfileController:saveProfile')->add($csrf);
-    $this->get('/password', 'App\Controller\Account\PasswordController:password')->setName('account.password');
-    $this->post('/password', 'App\Controller\Account\PasswordController:savePassword')->add($csrf);
+    /** \Slim\App $app */
+    $app = $this;
+
+    $app->get('', 'App\Controller\Account\AccountController:dashboard')->setName('account');
+    $app->get('/profile', 'App\Controller\Account\ProfileController:profile')->setName('account.profile');
+    $app->post('/profile', 'App\Controller\Account\ProfileController:save')->add($validator('App\Form\Account\ProfileForm'))->add($csrf);
+    $app->get('/password', 'App\Controller\Account\PasswordController:password')->setName('account.password');
+    $app->post('/password', 'App\Controller\Account\PasswordController:save')->add($validator('App\Form\Account\ChangePasswordForm', ['current', 'password', 'password_confirm']))->add($csrf);
 })->add($auth);
 
-// Home Page
-$app->get('/', function($request, $response){
 
-    return view('hello');
-})->setName('home');

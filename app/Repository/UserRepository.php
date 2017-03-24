@@ -43,4 +43,20 @@ class UserRepository implements AuthRepository
 
         return $query->first();
     }
+
+    /**
+     * @param string|int $id
+     * @param string     $password
+     *
+     * @return bool
+     */
+    public function passwordHashMatches($id, string $password)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return false;
+        }
+
+        return password_verify($password, $user->password);
+    }
 }

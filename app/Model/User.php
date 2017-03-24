@@ -18,6 +18,11 @@ class User extends Model implements Authenticatable, RoleInterface
     protected $hidden = ['password'];
 
     /**
+     * @var array
+     */
+    protected $guarded = [];
+
+    /**
      * @return string|int
      */
     public function getAuthId()

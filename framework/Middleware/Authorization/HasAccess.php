@@ -63,10 +63,10 @@ class HasAccess
                 return $response->withStatus(403, 'Access Denied');
             }
             if (has_identity()) {
-                return view('error/access-denied.twig', [], 403);
-            } else {
-                return redirect(route('login'));
+                return view('error.access-denied', [], 403);
             }
+
+            return redirect(route('login'));
         }
 
         return $next($request, $response);

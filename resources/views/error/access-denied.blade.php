@@ -1,8 +1,8 @@
 @extends('layout.app')
 @section('content')
-    <h1>Application Error</h1>
+    <h1>Access Denied</h1>
 
     <p>
-        Something went wrong.
+        You do not have access to this page.
     </p>
 @endsection

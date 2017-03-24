@@ -3,19 +3,18 @@
 
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <form action="{{ route('login.password.confirm', ['token' => $token]) }}" method="post" novalidate>
+            <form action="{{ route('account.password') }}" method="post" novalidate>
                 <fieldset>
-                    <legend>Reset Password</legend>
-                    <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
-                        <label for="password-email" class="control-label required">Email</label>
-                        <input type="email" name="email" id="password-email" class="form-control"
-                               value="{{ old('email', $email) }}" required>
-                        @if($errors->has('email'))
-                            <div class="help-block">{{ $errors->first('email') }}</div>
+                    <legend>Change Password</legend>
+                    <div class="form-group {{ $errors->has('current') ? 'has-error' : '' }}">
+                        <label for="current-current" class="control-label required">Current Password</label>
+                        <input type="password" name="current" id="password-current" class="form-control" value="" required>
+                        @if($errors->has('current'))
+                            <div class="help-block">{{ $errors->first('current') }}</div>
                         @endif
                     </div>
                     <div class="form-group {{ $errors->has('password') ? 'has-error' : '' }}">
-                        <label for="password-password" class="control-label required">Password</label>
+                        <label for="password-password" class="control-label required">New Password</label>
                         <input type="password" name="password" id="password-password" class="form-control" value="" required>
                         @if($errors->has('password'))
                             <div class="help-block">{{ $errors->first('password') }}</div>
@@ -30,7 +29,8 @@
                         @endif
                     </div>
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary">Save Password</button>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                        <a class="btn btn-default" href="{{ route('account') }}">Back</a>
                     </div>
                     {{ csrf() }}
                 </fieldset>

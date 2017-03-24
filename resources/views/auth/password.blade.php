@@ -7,8 +7,8 @@
                 <fieldset>
                     <legend>Forgot Password</legend>
                     <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
-                        <label for="login-email" class="control-label required">Email</label>
-                        <input type="email" name="email" id="login-email" class="form-control"
+                        <label for="password-email" class="control-label required">Email</label>
+                        <input type="email" name="email" id="password-email" class="form-control"
                                value="{{ old('email') }}" required>
                         @if($errors->has('email'))
                             <div class="help-block">{{ $errors->first('email') }}</div>
