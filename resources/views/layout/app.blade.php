@@ -15,24 +15,17 @@
 <body class="site">
 
 <div class="site__wrapper">
-    <header class="site__header">
-        <div class="container">
-
-        </div>
-    </header>
-    <div class="site__content">
-        @section('wrapper')
+    @include('partials.layout.navbar')
+    @section('wrapper')
+        @include('partials.layout.header')
+        <div class="site__content">
             <div class="container">
                 @include('partials.flash-messages')
                 @yield('content')
             </div>
-        @show
-    </div>
-    <footer class="site__footer">
-        <div class="container">
-            &copy; copyright {{ date('Y') }}
         </div>
-    </footer>
+    @show
+    @include('partials.layout.footer')
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>

@@ -8,6 +8,8 @@ return [
     */
 
     'app' => [
+        // The name of the app, can be used for emails or displayed in templates
+        'name'              => env('APP_NAME'),
         // The main app url. Should not end is slash
         'url'              => env('APP_URL'),
         // The base url for cdn. Set to app url to not use a cdn. Should not end in slash
@@ -77,6 +79,7 @@ return [
             'server'   => env('MAIL_SMTP_SERVER', 'smtp.example.org'),
             'port'     => env('MAIL_SMTP_PORT', 587),
             'encrypt'  => env('MAIL_SMTP_ENCRYPT', 'tls'),
+            'auth'  => env('MAIL_SMTP_AUTH', 'tls'),
             'user'     => env('MAIL_SMTP_USER'),
             'password' => env('MAIL_SMTP_PASSWORD'),
         ],

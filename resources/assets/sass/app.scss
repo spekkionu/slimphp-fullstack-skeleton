@@ -1,10 +1,51 @@
+img {
+  max-width: 100%;
+  height: auto;
+}
+.site__wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+}
+.navbar {
+  margin-bottom: 0;
+}
 .site__header {
+  background-image: url('https://placekitten.com/2000/300');
+  background-size: cover;
+  background-position: center;
+  height: 300px;
 }
-
-.site__content {
+.site__header--home {
+  background-image: url('https://placekitten.com/2000/500');
+  min-height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-
-.site__footer {
-  background-color: #bbb;
+.site__header__content {
+  position: relative;
+  width: auto;
   color: #fff;
+  margin: 2em 0;
+  padding: 2em;
+  background-color: rgba(0, 0, 0, .7);
+  border-radius: 8px;
+}
+.site__content {
+  flex: 1;
+  padding: 2em 0;
+}
+.site__footer {
+  padding: 2em 0;
+  background-color: #333;
+  color: #fff;
+  text-align: justify;
+}
+.copyright {
+  text-align: center;
+  padding: 1em 0;
+  font-style: italic;
+  color: #666;
 }

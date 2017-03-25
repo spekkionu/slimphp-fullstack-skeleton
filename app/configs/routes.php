@@ -22,6 +22,8 @@ $csrf = $app->getContainer()->get('Framework\Middleware\CsrfValidate');
 $validator = $app->getContainer()->get('Framework\Validation\ValidateRequestFactory');
 
 
+$app->get('/', 'App\Controller\HomeController')->setName('home');
+
 //////////////////////////////////////////////
 // Registration
 //////////////////////////////////////////////

@@ -20,10 +20,7 @@ class PasswordController
     public function send(Request $request, ForgotPasswordForm $form)
     {
         $form->setRequest($request);
-        $token = dispatch(new RequestPasswordReset($form->getValue('email')));
-        echo $token;
-        exit;
-        // ydfutlx1mhzzors2
+        dispatch(new RequestPasswordReset($form->getValue('email')));
 
         return redirect(route('login.password.submitted'));
     }

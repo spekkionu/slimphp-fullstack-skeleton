@@ -12,6 +12,7 @@ let path = require('path');
  |
  */
 mix.setPublicPath(path.resolve(__dirname, './public'));
+
 mix.js('resources/assets/javascript/app.js', 'assets/js/');
 mix.sass('resources/assets/sass/app.scss', 'assets/css/');
 // mix.version();

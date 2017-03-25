@@ -4,6 +4,7 @@ namespace Framework\Providers;
 use Illuminate\Config\Repository;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Swift_MailTransport;
+use Swift_NullTransport;
 use Swift_SendmailTransport;
 use Swift_SmtpTransport;
 
@@ -39,6 +40,8 @@ class MailServiceProvider extends AbstractServiceProvider
                     return $this->getSmtpTransport($config);
                 } elseif ($config->get('mail.driver') === 'sendmail') {
                     return $this->getSendmailTransport($config);
+                } elseif ($config->get('mail.driver') === 'fake') {
+                    return $this->getNullTransport($config);
                 } else {
                     return $this->getMailTransport($config);
                 }
@@ -67,6 +70,8 @@ class MailServiceProvider extends AbstractServiceProvider
         );
         $transport->setUsername($config->get('mail.smtp.user'));
         $transport->setPassword($config->get('mail.smtp.password'));
+        $transport->setAuthMode($config->get('mail.smtp.auth'));
+        //$transport->setLocalDomain('[127.0.0.1]');
 
         return $transport;
     }
@@ -89,5 +94,15 @@ class MailServiceProvider extends AbstractServiceProvider
     protected function getMailTransport(Repository $config)
     {
         return Swift_MailTransport::newInstance($config->get('mail.mailoptions', '-f%s'));
+    }
+
+    /**
+     * @param Repository $config
+     *
+     * @return Swift_NullTransport
+     */
+    protected function getNullTransport(Repository $config)
+    {
+        return Swift_NullTransport::newInstance();
     }
 }

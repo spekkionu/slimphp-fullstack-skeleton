@@ -161,7 +161,7 @@ if (!function_exists('route')) {
         $router = $container->get('router');
 
         if ($absolute) {
-            return $router->pathFor($name, $data, $queryParams);
+            return config('app.url') . $router->pathFor($name, $data, $queryParams);
         } else {
             return $router->relativePathFor($name, $data, $queryParams);
         }
