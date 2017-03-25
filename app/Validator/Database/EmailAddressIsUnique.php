@@ -1,5 +1,5 @@
 <?php
-namespace Framework\Validation\Validator\Database;
+namespace App\Validator\Database;
 
 use App\Repository\UserRepository;
 use Zend\Validator\AbstractValidator;

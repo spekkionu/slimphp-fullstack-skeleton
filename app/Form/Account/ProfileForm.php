@@ -3,7 +3,7 @@ namespace App\Form\Account;
 
 use App\Repository\UserRepository;
 use Framework\Form\BaseForm;
-use Framework\Validation\Validator\Database\EmailAddressIsUnique;
+use App\Validator\Database\EmailAddressIsUnique;
 use Golem\Auth\Auth;
 
 class ProfileForm extends BaseForm

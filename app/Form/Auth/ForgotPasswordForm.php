@@ -3,7 +3,7 @@ namespace App\Form\Auth;
 
 use App\Repository\UserRepository;
 use Framework\Form\BaseForm;
-use Framework\Validation\Validator\Database\EmailAddressExists;
+use App\Validator\Database\EmailAddressExists;
 
 class ForgotPasswordForm extends BaseForm
 {

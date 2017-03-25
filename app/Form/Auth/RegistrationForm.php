@@ -3,7 +3,7 @@ namespace App\Form\Auth;
 
 use App\Repository\UserRepository;
 use Framework\Form\BaseForm;
-use Framework\Validation\Validator\Database\EmailAddressIsUnique;
+use App\Validator\Database\EmailAddressIsUnique;
 
 class RegistrationForm extends BaseForm
 {

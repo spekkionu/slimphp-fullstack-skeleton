@@ -3,7 +3,7 @@ namespace App\Form\Account;
 
 use App\Repository\UserRepository;
 use Framework\Form\BaseForm;
-use Framework\Validation\Validator\Database\CurrentPassword;
+use App\Validator\Database\CurrentPassword;
 use Golem\Auth\Auth;
 
 class ChangePasswordForm extends BaseForm

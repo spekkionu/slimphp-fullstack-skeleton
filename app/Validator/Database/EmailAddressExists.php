@@ -1,14 +1,14 @@
 <?php
-namespace Framework\Validation\Validator\Database;
+namespace App\Validator\Database;
 
 use App\Repository\UserRepository;
 use Zend\Validator\AbstractValidator;
 
-class CurrentPassword extends AbstractValidator
+class EmailAddressExists extends AbstractValidator
 {
-    const INVALID = 'passwordInvalid';
-    const STRING_EMPTY = 'passwordStringEmpty';
-    const PASSWORD_MISMATCH = 'passwordDoesNotMatch';
+    const INVALID = 'emailInvalid';
+    const STRING_EMPTY = 'emailStringEmpty';
+    const DOES_NOT_EXIST = 'emailDoesNotExist';
 
     /**
      * Validation failure message template definitions
@@ -17,9 +17,9 @@ class CurrentPassword extends AbstractValidator
      */
     protected $messageTemplates
         = [
-            self::PASSWORD_MISMATCH => "Current password does not match.",
-            self::STRING_EMPTY      => "The input is an empty string",
-            self::INVALID           => "Invalid type given. String, integer or float expected",
+            self::DOES_NOT_EXIST => "Account not found with this email address.",
+            self::STRING_EMPTY   => "The input is an empty string",
+            self::INVALID        => "Invalid type given. String, integer or float expected",
         ];
 
     /**
@@ -28,9 +28,9 @@ class CurrentPassword extends AbstractValidator
     protected $repository;
 
     /**
-     * @var int|string
+     * @var int|null
      */
-    protected $id;
+    protected $exempt = null;
 
     /**
      * @param UserRepository $repository
@@ -41,11 +41,11 @@ class CurrentPassword extends AbstractValidator
     }
 
     /**
-     * @param string|int $id
+     * @param int|null $id
      */
-    public function setId($id)
+    public function setExempt($id = null)
     {
-        $this->id = $id;
+        $this->exempt = $id;
     }
 
     /**
@@ -55,9 +55,6 @@ class CurrentPassword extends AbstractValidator
     {
         if (!($this->repository instanceof UserRepository)) {
             throw new \Zend\Validator\Exception\RuntimeException('User repository not set');
-        }
-        if (!$this->id) {
-            throw new \Zend\Validator\Exception\RuntimeException('User id not set');
         }
         if (!is_string($value)) {
             $this->error(self::INVALID);
@@ -73,8 +70,8 @@ class CurrentPassword extends AbstractValidator
             return false;
         }
 
-        if (!$this->repository->passwordHashMatches($this->id, $value)) {
-            $this->error(self::PASSWORD_MISMATCH);
+        if (!$this->repository->emailAddressExists($value, $this->exempt)) {
+            $this->error(self::DOES_NOT_EXIST);
 
             return false;
         }
