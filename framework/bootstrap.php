@@ -31,4 +31,6 @@ if (env('APP_DEBUG', true)) {
 }
 
 // Init Service Container
+global $container;
 $container = require APP_DIR . '/configs/services.php';
+

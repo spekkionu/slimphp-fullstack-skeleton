@@ -1,4 +1,5 @@
 <?php
+global $container;
 require_once(__DIR__ . '/framework/bootstrap.php');
 
 /** @var Illuminate\Database\Capsule\Manager $db */
@@ -20,13 +21,8 @@ return [
             "table_prefix" => env('DATABASE_PREFIX', ''),
         ],
         "testing"                 => [
-            "adapter" => "mysql",
-            "host"    => 'localhost',
-            "name"    => 'testing',
-            "user"    => 'tester',
-            "pass"    => 'testpassword',
-            "port"    => 3306,
-            "charset" => "utf8",
+            "adapter" => "sqlite",
+            "name"    => './storage/database/testing.sqlite',
         ],
     ],
 
