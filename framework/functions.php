@@ -61,9 +61,8 @@ if (!function_exists('current_url')) {
      */
     function current_url($absolute = false, $secure = false)
     {
-        global $container;
         /** @var Slim\Http\Request $request */
-        $request = $container->get('Slim\Http\Request');
+        $request = app('Slim\Http\Request');
         $uri     = Zend\Uri\UriFactory::factory($request->getUri()->__toString());
         if ($secure) {
             $uri = $uri->setScheme('https');
@@ -88,9 +87,8 @@ if (!function_exists('asset')) {
      */
     function asset($path = '', $absolute = false, $secure = false)
     {
-        global $container;
         /** @var Slim\Http\Request $request */
-        $request = $container->get('Slim\Http\Request');
+        $request = app('Slim\Http\Request');
         $uri     = config('app.url') . '/' . ltrim($path, '/');
         $uri     = Zend\Uri\UriFactory::factory($uri);
         if ($secure) {
@@ -156,15 +154,13 @@ if (!function_exists('route')) {
      */
     function route($name, array $data = [], array $queryParams = [], $absolute = false)
     {
-        global $container;
         /** @var Slim\Interfaces\RouterInterface $router */
-        $router = $container->get('router');
+        $router = app('router');
 
         if ($absolute) {
             return config('app.url') . $router->pathFor($name, $data, $queryParams);
-        } else {
-            return $router->relativePathFor($name, $data, $queryParams);
         }
+        return $router->relativePathFor($name, $data, $queryParams);
     }
 }
 if (!function_exists('redirect')) {
@@ -195,11 +191,10 @@ if (!function_exists('view')) {
      */
     function view($template, array $params = [], $status = 200)
     {
-        global $container;
         /** @var \Framework\View\Blade $view */
-        $view = $container->get('view');
+        $view = app('view');
         /** @var \Slim\Http\Response $response */
-        $response = $container->get('response');
+        $response = app('response');
 
         return $view->render($response->withStatus($status), $template, $params);
     }
@@ -212,15 +207,14 @@ if (!function_exists('send_404')) {
      *
      * @return ResponseInterface|Response
      */
-    function send404(array $params = [])
+    function send_404(array $params = [])
     {
-        global $container;
         /** @var \Framework\View\Blade $view */
-        $view = $container->get('view');
+        $view = app('view');
         /** @var \Slim\Http\Response $response */
-        $response = $container->get('response');
+        $response = app('response');
         /** @var \Slim\Http\Request $request */
-        $request = $container->get('request');
+        $request = app('request');
 
         if ($request->isXhr()) {
             if (empty($params)) {
@@ -242,11 +236,10 @@ if (!function_exists('send_json')) {
      *
      * @return Response
      */
-    function sendJson($data = [], int $status = 200)
+    function send_json($data = [], int $status = 200)
     {
-        global $container;
         /** @var Response $response */
-        $response = $container->get('response');
+        $response = app('response');
 
         return $response->withJson($data, $status);
     }
@@ -263,7 +256,7 @@ if (!function_exists('render')) {
      */
     function render($callable, array $params = [], array $query = [])
     {
-        global $container;
+        $container = app();
         if (preg_match('/^(.*)::(.*)$/', $callable)) {
             $params['request']  = $container->get('request')->withQueryParams($query);
             $params['response'] = $container->get('response');
@@ -320,7 +313,6 @@ if (!function_exists('sub_request')) {
      */
     function sub_request($path, array $query = null)
     {
-        global $container;
         $method      = 'GET';
         $headers     = [
             'X-Sub-Request' => true,
@@ -330,7 +322,7 @@ if (!function_exists('sub_request')) {
         $response    = null;
         $query       = $query ? http_build_query($query) : '';
         /** @var ResponseInterface $response */
-        $response = $container->get('Slim\App')->subRequest(
+        $response = app('Slim\App')->subRequest(
             $method, $path, $query, $headers, $cookies, $bodyContent, $response
         );
 
@@ -351,9 +343,8 @@ if (!function_exists('config')) {
      */
     function config($key, $default = null)
     {
-        global $container;
         /** @var Illuminate\Contracts\Config\Repository $config */
-        $config = $container->get('Illuminate\Contracts\Config\Repository');
+        $config = app('Illuminate\Contracts\Config\Repository');
 
         return $config->get($key, $default);
     }
@@ -368,13 +359,11 @@ if (!function_exists('logger')) {
      */
     function logger($name = null)
     {
-        global $container;
-
         if ($name) {
-            return $container->get("log.{$name}");
+            return app("log.{$name}");
         }
 
-        return $container->get('Monolog\Logger');
+        return app('Monolog\Logger');
     }
 }
 if (!function_exists('session')) {
@@ -385,9 +374,7 @@ if (!function_exists('session')) {
      */
     function session($key = null, $default = null)
     {
-        global $container;
-
-        $session = $container->get('Symfony\Component\HttpFoundation\Session\Session');
+        $session = app('Symfony\Component\HttpFoundation\Session\Session');
         if (is_null($key)) {
             return $session;
         }
@@ -513,9 +500,7 @@ if (!function_exists('auth')) {
      */
     function auth()
     {
-        global $container;
-
-        return $container->get('Golem\Auth\Auth');
+        return app('Golem\Auth\Auth');
     }
 }
 if (!function_exists('has_identity')) {
@@ -526,11 +511,7 @@ if (!function_exists('has_identity')) {
      */
     function has_identity()
     {
-        global $container;
-        /** @var Golem\Auth\Auth $auth */
-        $auth = $container->get('Golem\Auth\Auth');
-
-        return $auth->loggedIn();
+        return auth()->loggedIn();
     }
 }
 if (!function_exists('acl')) {
@@ -541,10 +522,7 @@ if (!function_exists('acl')) {
      */
     function acl()
     {
-        global $container;
-
-        /** @var \Zend\Permissions\Acl\Acl $acl */
-        return $container->get('Zend\Permissions\Acl\Acl');
+        return app('Zend\Permissions\Acl\Acl');
     }
 }
 if (!function_exists('has_access')) {
@@ -560,10 +538,8 @@ if (!function_exists('has_access')) {
      */
     function has_access($resource = null, $privilege = null)
     {
-        global $container;
-
         /** @var Golem\Auth\Auth $auth */
-        $auth = $container->get('Golem\Auth\Auth');
+        $auth = app('Golem\Auth\Auth');
 
         if ($auth->loggedIn()) {
             $role = $auth->user();
@@ -571,7 +547,7 @@ if (!function_exists('has_access')) {
             $role = 'guest';
         }
         /** @var \Zend\Permissions\Acl\Acl $acl */
-        $acl = $container->get('Zend\Permissions\Acl\Acl');
+        $acl = app('Zend\Permissions\Acl\Acl');
 
         return $acl->isAllowed($role, $resource, $privilege);
     }
@@ -588,9 +564,8 @@ if (!function_exists('event')) {
      */
     function event($event, $payload = [], $halt = false)
     {
-        global $container;
         /** @var \Illuminate\Events\Dispatcher $dispatcher */
-        $dispatcher = $container->get('event');
+        $dispatcher = app('event');
 
         return $dispatcher->dispatch($event, $payload, $halt);
     }
@@ -605,9 +580,8 @@ if (!function_exists('dispatch')) {
      */
     function dispatch($command)
     {
-        global $container;
         /** @var \League\Tactician\CommandBus $commandBus */
-        $commandBus = $container->get('command');
+        $commandBus = app('command');
 
         return $commandBus->handle($command);
     }
@@ -672,7 +646,7 @@ if (!function_exists('format_date')) {
 
             return $date->format($format);
         }
-        if (!($date instanceof \DateTime)) {
+        if (!($date instanceof DateTime)) {
             return null;
         }
         if ($timezone) {
@@ -695,8 +669,7 @@ if (!function_exists('escape')) {
         if (empty($value)) {
             return null;
         }
-        global $container;
-        $e = $container->get('Aura\Html\Escaper');
+        $e = app('Aura\Html\Escaper');
         if (in_array($escaper, ['attr', 'attribute', 'a'])) {
             return $e->attr($value);
         } elseif (in_array($escaper, ['css', 'c'])) {
@@ -718,8 +691,6 @@ if (!function_exists('html')) {
      */
     function html()
     {
-        global $container;
-
-        return $container->get('Aura\Html\HelperLocator');
+        return app('Aura\Html\HelperLocator');
     }
 }

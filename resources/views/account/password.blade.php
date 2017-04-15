@@ -3,7 +3,7 @@
 
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <form action="{{ route('account.password') }}" method="post" novalidate>
+            <form id="form-password" action="{{ route('account.password') }}" method="post" novalidate>
                 <fieldset>
                     <legend>Change Password</legend>
                     <div class="form-group {{ $errors->has('current') ? 'has-error' : '' }}">

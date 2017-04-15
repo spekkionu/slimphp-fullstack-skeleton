@@ -104,6 +104,10 @@ return [
                 'root'   => storage_path('public'),
                 'visibility' => 'public',
             ],
+            'test' => [
+                'driver' => 'null',
+                'visibility' => 'public',
+            ],
 
 //            's3' => [
 //                'driver' => 's3',

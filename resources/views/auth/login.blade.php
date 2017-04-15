@@ -3,7 +3,7 @@
 
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <form action="{{ route('login') }}" method="post" novalidate>
+            <form id="form-login" action="{{ route('login') }}" method="post" novalidate>
                 <fieldset>
                     <legend>Login</legend>
                     <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">

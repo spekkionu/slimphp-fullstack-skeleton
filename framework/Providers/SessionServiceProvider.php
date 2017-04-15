@@ -1,12 +1,15 @@
 <?php
+
 namespace Framework\Providers;
 
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
 use Framework\Validation\ValidateRequestFactory;
 use Framework\Validation\ValidationManager;
+use Symfony\Component\HttpFoundation\Session\Storage\PhpBridgeSessionStorage;
 
 class SessionServiceProvider extends AbstractServiceProvider
 {
@@ -35,12 +38,17 @@ class SessionServiceProvider extends AbstractServiceProvider
     {
         $this->getContainer()->share(
             'Symfony\Component\HttpFoundation\Session\Session', function () {
-            $session = new Session(new NativeSessionStorage(
+            $driver = env('SESSION_DRIVER', 'native');
+            if ($driver === 'test') {
+                return new Session(new MockArraySessionStorage());
+            }
+            if ($driver === 'legacy') {
+                return new Session(new PhpBridgeSessionStorage());
+            }
+            return new Session(new NativeSessionStorage(
                 [],
                 new NativeFileSessionHandler(STORAGE_DIR . DIRECTORY_SEPARATOR . 'session')
             ));
-
-            return $session;
         }
         );
 

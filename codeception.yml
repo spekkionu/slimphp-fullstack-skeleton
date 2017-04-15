@@ -13,12 +13,12 @@ settings:
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
-        - Codeception\Extension\PhpBuiltinServer
-        - MigrationExtension
     config:
+        ApplicationExtension:
+            verbose: false
         MigrationExtension:
             environment: testing
-            verbose: true
+            verbose: false
             cleanup: true
             populate: false
             type: sqlite

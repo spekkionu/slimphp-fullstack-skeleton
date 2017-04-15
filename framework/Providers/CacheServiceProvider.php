@@ -9,6 +9,7 @@ use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\Common\Cache\MemcacheCache;
 use Doctrine\Common\Cache\MemcachedCache;
 use Doctrine\Common\Cache\RedisCache;
+use Doctrine\Common\Cache\VoidCache;
 use Illuminate\Config\Repository;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 
@@ -59,6 +60,12 @@ class CacheServiceProvider extends AbstractServiceProvider
         $cache = null;
         if ($driver === 'array') {
             $cache = new ArrayCache();
+            $cache->setNamespace($config->get('cache.prefix'));
+
+            return $cache;
+        }
+        if ($driver === 'test') {
+            $cache = new VoidCache();
             $cache->setNamespace($config->get('cache.prefix'));
 
             return $cache;

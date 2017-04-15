@@ -3,7 +3,7 @@
 
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <form action="{{ route('account.profile') }}" method="post" novalidate>
+            <form id="form-profile" action="{{ route('account.profile') }}" method="post" novalidate>
                 <fieldset>
                     <legend>Update Profile</legend>
                     <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">

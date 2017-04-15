@@ -6,9 +6,6 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class MigrationExtension extends \Codeception\Extension
 {
-
-    protected $enabled = false;
-
     /**
      * @var Db
      */
@@ -25,49 +22,44 @@ class MigrationExtension extends \Codeception\Extension
     public function beforeSuite(\Codeception\Event\SuiteEvent $e)
     {
         $settings = $e->getSettings();
-        if ( ! isset($settings['modules']['config']['Migration'])
-             || ! $settings['modules']['config']['Migration']['enabled']
-        ) {
-            $this->enabled = false;
-
-            return;
-        }
         if ( ! $this->hasDbConnection()) {
             $this->writeln('Cannot use Migration module without Db module');
-            $this->enabled = false;
 
             return;
         }
 
-        if ($this->config['type'] === 'sqlite') {
-            $this->dropDatabase();
-        }
-
-        $this->connect($settings['modules']['config']['Db']['dsn'], $settings['modules']['config']['Db']['user'],
-            $settings['modules']['config']['Db']['password']);
+        $this->connect(
+            $settings['modules']['config']['Db']['dsn'],
+            $settings['modules']['config']['Db']['user'],
+            $settings['modules']['config']['Db']['password']
+        );
 
         // Drop all tables and recreate migration
         if ($this->config['type'] === 'mysql') {
-            $this->dropTables();
+            $this->dropMysqlTables();
         }
         $this->runMigrations();
     }
 
     public function beforeTest(\Codeception\Event\TestEvent $e)
     {
-        if ( ! $this->enabled) {
-            return;
+        if ($this->config['type'] === 'sqlite') {
+            $this->dropSqliteTables();
         }
-        $this->truncateTables();
+        if ($this->config['type'] === 'mysql') {
+            $this->truncateTables();
+        }
+
         $this->seedDatabase();
-        $this->disconnect();
+        if ($this->config['type'] === 'mysql') {
+            $this->disconnect();
+        }
+
     }
 
     public function afterSuite(\Codeception\Event\SuiteEvent $e)
     {
-        if ( ! $this->enabled) {
-            return;
-        }
+
     }
 
     protected function hasDbConnection()
@@ -101,9 +93,26 @@ class MigrationExtension extends \Codeception\Extension
     /**
      * Drops all tables
      */
-    protected function dropTables()
+    protected function dropSqliteTables()
     {
-        $this->writeln('Removing existing tables');
+        if ($this->config['verbose']) {
+            $this->writeln('Removing existing tables');
+        }
+        $sth    = $this->getConnection()->query("SELECT `name` FROM sqlite_master WHERE `type`='table'");
+        $tables = $sth->fetchAll(PDO::FETCH_COLUMN);
+        foreach ($tables as $table) {
+            $this->getConnection()->exec("DELETE FROM `{$table}`");
+        }
+    }
+
+    /**
+     * Drops all tables
+     */
+    protected function dropMysqlTables()
+    {
+        if ($this->config['verbose']) {
+            $this->writeln('Removing existing tables');
+        }
         $this->getConnection()->exec('SET foreign_key_checks = 0');
         $sth    = $this->getConnection()->query('SHOW TABLES');
         $tables = [];
@@ -119,23 +128,14 @@ class MigrationExtension extends \Codeception\Extension
     }
 
     /**
-     * Deletes sqlite database
-     */
-    protected function dropDatabase()
-    {
-        $path = $this->config['path'];
-        if (file_exists($path)) {
-            @unlink($path);
-        }
-    }
-
-    /**
      * Runs migration script
      * Done once at start of test suite
      */
     protected function runMigrations()
     {
-        $this->writeln('Running migrations');
+        if ($this->config['verbose']) {
+            $this->writeln('Running migrations');
+        }
         $phinx         = new PhinxApplication();
         $command       = $phinx->find('migrate');
         $commandTester = new CommandTester($command);
@@ -157,7 +157,9 @@ class MigrationExtension extends \Codeception\Extension
     protected function seedDatabase()
     {
         if ($this->config['populate']) {
-            $this->writeln('Seeding test data');
+            if ($this->config['verbose']) {
+                $this->writeln('Seeding test data');
+            }
         }
     }
 
@@ -168,7 +170,9 @@ class MigrationExtension extends \Codeception\Extension
     protected function truncateTables()
     {
         if ($this->config['cleanup']) {
-            $this->writeln('Clearing out existing test data');
+            if ($this->config['verbose']) {
+                $this->writeln('Clearing out existing test data');
+            }
             $this->getConnection()->exec('SET foreign_key_checks = 0');
             $sth = $this->getConnection()->query('SHOW TABLES');
             while ($table = $sth->fetchColumn()) {
@@ -176,8 +180,5 @@ class MigrationExtension extends \Codeception\Extension
             }
             $this->getConnection()->exec('SET foreign_key_checks = 1');
         }
-
     }
-
-
 }
