@@ -1,4 +1,5 @@
 <?php
+
 namespace Framework\Providers;
 
 use Illuminate\Config\Repository;
@@ -29,6 +30,7 @@ class DatabaseServiceProvider extends AbstractServiceProvider implements Bootabl
     protected $provides
         = [
             'database',
+            'PDO',
             'Illuminate\Database\Capsule\Manager',
             'Illuminate\Database\Eloquent\Factory',
         ];
@@ -59,6 +61,12 @@ class DatabaseServiceProvider extends AbstractServiceProvider implements Bootabl
             }
         );
         $this->getContainer()->share(
+            'PDO',
+            function () {
+                return $this->getContainer()->get('Illuminate\Database\Capsule\Manager')->connection()->getPdo();
+            }
+        );
+        $this->getContainer()->share(
             'Illuminate\Database\Eloquent\Factory',
             function () {
                 $faker = \Faker\Factory::create();
@@ -86,7 +94,7 @@ class DatabaseServiceProvider extends AbstractServiceProvider implements Bootabl
             $driver = $config->get("database.{$name}.driver", 'mysql');
             if ($driver === 'sqlite') {
                 $dbname = $config->get("database.{$name}.dbname");
-                if ($dbname === 'memory') {
+                if (in_array($dbname, ['memory', ':memory:'])) {
                     $database = ':memory:';
                 } else {
                     $filename = pathinfo($dbname, PATHINFO_FILENAME) . '.sqlite';

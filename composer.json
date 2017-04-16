@@ -69,7 +69,8 @@
       "tests/Extensions/"
     ],
     "psr-4": {
-      "Test\\Model\\": "tests/_support/Helper"
+      "Test\\Model\\": "tests/_support/Helper",
+      "Test\\Traits\\": "tests/Traits"
     }
   },
   "suggest": {

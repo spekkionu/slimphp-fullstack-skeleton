@@ -59,7 +59,12 @@ class MigrationExtension extends \Codeception\Extension
 
     public function afterSuite(\Codeception\Event\SuiteEvent $e)
     {
-
+        if ($this->config['type'] === 'sqlite') {
+            $this->dropSqliteTables();
+        }
+        if ($this->config['type'] === 'mysql') {
+            $this->dropMysqlTables();
+        }
     }
 
     protected function hasDbConnection()
