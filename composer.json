@@ -70,6 +70,7 @@
     ],
     "psr-4": {
       "Test\\Model\\": "tests/_support/Helper",
+      "Test\\Unit\\": "tests/Unit",
       "Test\\Traits\\": "tests/Traits"
     }
   },

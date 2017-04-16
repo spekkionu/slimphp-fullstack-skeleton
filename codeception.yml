@@ -11,6 +11,13 @@ settings:
     memory_limit: 1024M
     strict_xml: true
     backup_globals: false
+coverage:
+    enabled: false
+    remote: false
+    include:
+        - app/*
+    exclude:
+        - app/configs/*
 extensions:
     enabled:
         - Codeception\Extension\RunFailed

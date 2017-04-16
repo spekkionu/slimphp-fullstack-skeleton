@@ -15,6 +15,14 @@
       <directory suffix=".php">./tests/unit/</directory>
     </testsuite>
   </testsuites>
+  <filter>
+    <whitelist processUncoveredFilesFromWhitelist="true">
+      <directory suffix=".php">./app</directory>
+      <exclude>
+        <directory>./app/configs</directory>
+      </exclude>
+    </whitelist>
+  </filter>
   <php>
     <env name="APP_ENV" value="testing"/>
     <env name="APP_NAME" value="Test"/>
